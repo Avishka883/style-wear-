@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="maison">
+  <title>STYLE WEAR — Beyond Fashion. Beyond Limits.</title>
+
+  <!-- Approved Google Fonts: Italiana (Display), Jost (Body & Tracked Caps), IBM Plex Mono (Data & Pricing) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Italiana&family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <!-- Approved CDN Libraries: Three.js UMD & Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="site-header" id="top">
+    <div class="utility-strip">
+      <div class="container utility-inner">
+        <div class="utility-left">
+          <span class="utility-item">
+            <i data-lucide="phone" width="14" height="14"></i>
+            Colombo Studio: +94 11 273 3733
+          </span>
+          <span class="utility-item">
+            <i data-lucide="truck" width="14" height="14"></i>
+            Island-Wide Express · PayHere · FriMi · COD
+          </span>
+        </div>
+        <div class="utility-right">
+          <span class="utility-item">Currency</span>
+          <div class="currency-toggle" role="group" aria-label="Select currency">
+            <button type="button" class="currency-btn active" id="curr-lkr" onclick="setCurrency('LKR')">LKR</button>
+            <button type="button" class="currency-btn" id="curr-usd" onclick="setCurrency('USD')">USD</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container main-nav-bar">
+      <div class="nav-bar-inner">
+        <a href="#home" class="brand-mark-3d" aria-label="STYLE WEAR Home">
+          <span class="brand-monogram" aria-hidden="true">SW</span>
+          <span class="brand-wordmark">STYLE WEAR</span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Main navigation">
+          <a href="#home" class="nav-link active">Home</a>
+          <a href="#showroom" class="nav-link">Shop</a>
+          <a href="#showroom" class="nav-link" onclick="selectGenderPortal('men')">Men</a>
+          <a href="#showroom" class="nav-link" onclick="selectGenderPortal('women')">Women</a>
+          <a href="#virtual-mirror" class="nav-link">Virtual Try-On</a>
+          <a href="#contact" class="nav-link">Contact Us</a>
+        </nav>
+
+        <div class="header-actions">
+          <button type="button" class="icon-action-btn" onclick="openProfileDrawer()" aria-label="Open User Account and Saved Style Profile">
+            <i data-lucide="user" width="16" height="16"></i>
+            <span>Account</span>
+          </button>
+          <button type="button" class="icon-action-btn" onclick="openCartDrawer()" aria-label="Open Shopping Bag">
+            <i data-lucide="shopping-bag" width="16" height="16"></i>
+            <span>Bag</span>
+            <span class="cart-badge" id="header-cart-count">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-manifesto-strip">
+      <div class="container">
+        <p class="about-manifesto-text">
+          STYLE WEAR is a modern fashion destination dedicated to bringing style, confidence and individuality together. Explore premium fashion collections and discover your own unique style through an innovative digital shopping experience.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section – Cinematic 3D Introduction -->
+    <section class="hero-runway" id="home" aria-label="3D Cinematic Fashion Runway">
+      <div class="hero-editorial-col">
+        <div class="brand-wordmark-hero">STYLE WEAR</div>
+        <span class="label-voice" style="color: var(--tertiary);">Colombo Digital Atelier · Autumn / Monsoon Couture</span>
+        <h1 class="hero-headline">STYLE WEAR – BEYOND FASHION. BEYOND LIMITS.</h1>
+        <p class="hero-subtitle">Discover Your Identity Through Fashion.</p>
+
+        <div class="hero-cta-group">
+          <a href="#showroom" class="btn btn-primary" onclick="pulseRunwayEntrance()">Enter the Fashion World</a>
+          <a href="#product-atelier" class="btn btn-secondary">Explore Collection</a>
+          <a href="#virtual-mirror" class="btn btn-ghost">Discover Your Style</a>
+        </div>
+
+        <div class="hero-metrics-row">
+          <div>
+            <div class="hero-metric-val">360°</div>
+            <div class="hero-metric-lbl">Live 3D Runway Mirror</div>
+          </div>
+          <div>
+            <div class="hero-metric-val">10-Point</div>
+            <div class="hero-metric-lbl">Verified Size &amp; Fit Matrix</div>
+          </div>
+          <div>
+            <div class="hero-metric-val">LKR / USD</div>
+            <div class="hero-metric-lbl">Zero Foreign Stamp Duty in LKR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-canvas-layer">
+        <canvas id="hero-three-canvas" aria-label="Interactive 3D fashion model walking on studio runway with volumetric mist"></canvas>
+        <div class="hero-stage-hud">
+          <span class="label-voice" style="color: var(--on-surface-variant);">3D Runway Feed · Studio 01</span>
+          <div class="stage-controls">
+            <button type="button" class="stage-chip active" id="hero-walk-btn" onclick="toggleHeroWalk(this)">Runway Walk: On</button>
+            <button type="button" class="stage-chip" onclick="setHeroLight('nocturne', this)">Nocturne</button>
+            <button type="button" class="stage-chip active" onclick="setHeroLight('champagne', this)">Champagne Rim</button>
+            <button type="button" class="stage-chip" onclick="setHeroLight('silver', this)">Silver Flash</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Immersive Digital Fashion Showroom & Categories -->
+    <section class="section-block container reveal-section" id="showroom">
+      <div class="section-head">
+        <div class="kicker-voice">Digital Fashion Showroom</div>
+        <h2>New Arrivals &amp; Curated Collections</h2>
+        <p>Step inside the digital showroom tailored for Sri Lankan climate, handloom craft, and contemporary silhouettes. Filter by house line, garment category, or price tier.</p>
+      </div>
+
+      <!-- Men's & Women's Interactive Entry Portals -->
+      <div class="gender-showroom-split">
+        <div class="showroom-portal-card active" id="portal-women">
+          <div class="portal-header">
+            <div>
+              <span class="label-voice" style="color: var(--tertiary);">Collection 01</span>
+              <h3 class="portal-title">Women's Collection</h3>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="selectGenderPortal('women')">Focus Women</button>
+          </div>
+          <div class="category-pill-row" id="women-cat-pills">
+            <button type="button" class="cat-btn active" onclick="filterCatalog('women', 'All', this)">All Women</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('women', 'Dresses', this)">Dresses</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('women', 'Tops', this)">Tops</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('women', 'Blouses', this)">Blouses</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('women', 'Skirts', this)">Skirts</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('women', 'Trousers', this)">Trousers</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('women', 'Jackets', this)">Jackets</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('women', 'Casual', this)">Casual</button>
+          </div>
+        </div>
+
+        <div class="showroom-portal-card" id="portal-men">
+          <div class="portal-header">
+            <div>
+              <span class="label-voice" style="color: var(--tertiary);">Collection 02</span>
+              <h3 class="portal-title">Men's Collection</h3>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="selectGenderPortal('men')">Focus Men</button>
+          </div>
+          <div class="category-pill-row" id="men-cat-pills">
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'All', this)">All Men</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'T-Shirts', this)">T-Shirts</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'Shirts', this)">Shirts</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'Trousers', this)">Trousers</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'Jeans', this)">Jeans</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'Jackets', this)">Jackets</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'Casual', this)">Casual</button>
+            <button type="button" class="cat-btn" onclick="filterCatalog('men', 'Formal', this)">Formal</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Filter & Price Comparison Controls -->
+      <div class="filter-toolbar">
+        <div class="filter-group">
+          <span class="label-voice">Showroom View</span>
+          <div class="filter-row">
+            <button type="button" class="cat-btn active" id="view-all-btn" onclick="setGenderFilter('all', this)">All Silhouettes</button>
+            <button type="button" class="cat-btn" id="view-women-btn" onclick="setGenderFilter('women', this)">Women</button>
+            <button type="button" class="cat-btn" id="view-men-btn" onclick="setGenderFilter('men', this)">Men</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="label-voice">Price Tier Filter</span>
+          <div class="filter-row">
+            <button type="button" class="cat-btn active" onclick="setPriceTier('all', this)">All Tiers</button>
+            <button type="button" class="cat-btn" onclick="setPriceTier('under-6500', this)">Under LKR 6,500</button>
+            <button type="button" class="cat-btn" onclick="setPriceTier('mid', this)">LKR 6,500 – 12,000</button>
+            <button type="button" class="cat-btn" onclick="setPriceTier('luxury', this)">Capsule 12,000+</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="label-voice">Active Results</span>
+          <span class="mono-voice" id="catalog-count-readout" style="color: var(--tertiary);">8 Silhouettes Displayed</span>
+        </div>
+      </div>
+
+      <!-- 3D Animated Product Display Grid -->
+      <div class="product-grid" id="catalog-grid"></div>
+
+      <!-- Price Display Matrix & Quick Comparison -->
+      <div class="price-matrix-wrap">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div>
+            <span class="label-voice" style="color: var(--tertiary);">Transparent Pricing Matrix</span>
+            <h3 style="font-family: var(--font-headline); font-size: var(--subhead-size); font-weight: 400; margin: var(--space-xs) 0 0;">Collection Price &amp; Dispatch Comparison</h3>
+          </div>
+          <span class="label-voice">Click any row to inspect in Product Atelier</span>
+        </div>
+        <table class="couture-table">
+          <thead>
+            <tr>
+              <th>Piece</th>
+              <th>Collection</th>
+              <th>Textile &amp; GSM</th>
+              <th>Price (<span id="matrix-curr-head">LKR</span>)</th>
+              <th>Fit Consensus</th>
+              <th>Western Province Dispatch</th>
+            </tr>
+          </thead>
+          <tbody id="price-matrix-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Dedicated Interactive Product Details & Pricing Interface -->
+    <section class="section-block container reveal-section" id="product-atelier">
+      <div class="section-head">
+        <div class="kicker-voice">Product Atelier &amp; Fit Intelligence</div>
+        <h2>Interactive Garment Inspection &amp; Sizing</h2>
+        <p>Engineered around verified apparel usability research: explicit button size selectors, dual-unit size charts, real human-model context, and cross-review customer photo navigation.</p>
+      </div>
+
+      <div class="pdp-atelier-grid">
+        <!-- Multi-Angle Gallery -->
+        <div class="pdp-gallery-panel">
+          <div class="pdp-main-frame">
+            <canvas id="pdp-gallery-canvas" width="640" height="736" aria-label="Selected garment studio view"></canvas>
+            <div class="pdp-model-caption">
+              <span id="pdp-view-label">View 01 · On Human Model (Height 173 cm / 5'8" · Size M)</span>
+              <span class="mono-voice" id="pdp-color-label" style="color: var(--tertiary);">Obsidian Noir</span>
+            </div>
+          </div>
+
+          <div class="pdp-thumb-strip" role="tablist" aria-label="Product gallery views">
+            <button type="button" class="pdp-thumb-btn active" onclick="setPdpGalleryView('model', this)">Human Model</button>
+            <button type="button" class="pdp-thumb-btn" onclick="setPdpGalleryView('flatlay', this)">Garment Cut</button>
+            <button type="button" class="pdp-thumb-btn" onclick="setPdpGalleryView('fabric', this)">Weave Macro</button>
+            <button type="button" class="pdp-thumb-btn" onclick="openCrossReviewModal(0)">Customer Photos (4)</button>
+          </div>
+        </div>
+
+        <!-- Product Controls, Sizes, Colorways, Stock, CTA -->
+        <div class="pdp-info-panel">
+          <div>
+            <span class="label-voice" id="pdp-collection-tag" style="color: var(--tertiary);">Women · Exclusive Capsule</span>
+            <h3 class="pdp-title" id="pdp-title">Kandy Handloom Draped Trench Dress</h3>
+            <p id="pdp-desc" style="color: var(--on-surface-variant); margin: var(--space-sm) 0 0;">
+              Architectural wrap-silhouette tailored from breathable 210 GSM Sri Lankan handloom cotton-linen. Designed for humid coastal evenings and formal Colombo occasions with unedited true-tone dye consistency.
+            </p>
+          </div>
+
+          <div class="pdp-price-block">
+            <div>
+              <div class="pdp-price-main mono-voice" id="pdp-price-primary">LKR 14,800</div>
+              <div class="pdp-price-alt mono-voice" id="pdp-price-secondary">Approx. USD 49.00 · 0% foreign card stamp duty in LKR</div>
+            </div>
+            <div class="stock-pill" id="pdp-stock-pill">
+              <i data-lucide="check-circle" width="14" height="14"></i>
+              <span id="pdp-stock-text">In Stock · 6 Ready for Dispatch</span>
+            </div>
+          </div>
+
+          <!-- Color Swatches -->
+          <div>
+            <span class="label-voice" style="display: block; margin-bottom: var(--space-sm);">Colorway — <span id="pdp-swatch-name" style="color: var(--on-surface);">Obsidian Noir</span></span>
+            <div class="swatch-row" id="pdp-swatch-row"></div>
+          </div>
+
+          <!-- Button-Style Size Selectors (Baymard #3) -->
+          <div>
+            <div class="size-header-row" style="margin-bottom: var(--space-sm);">
+              <span class="label-voice">Select Size (Live Stock per Size)</span>
+              <button type="button" class="size-link-btn" onclick="openSizeGuideModal()">Size Guide (cm / in)</button>
+            </div>
+            <div class="size-btn-grid" id="pdp-size-grid"></div>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="pdp-cta-stack">
+            <button type="button" class="btn btn-primary" onclick="addSelectedToCart()">
+              <i data-lucide="shopping-bag" width="16" height="16"></i>
+              Add to Cart
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="buyNowSelected()">
+              <i data-lucide="zap" width="16" height="16"></i>
+              Buy Now
+            </button>
+            <button type="button" class="btn btn-ghost pdp-cta-full" onclick="sendSelectedToMirror()">
+              <i data-lucide="sparkles" width="16" height="16"></i>
+              Launch in 360° Virtual Try-On Mirror
+            </button>
+          </div>
+
+          <div style="border-top: var(--hairline-soft); padding-top: var(--space-md); font-size: 0.84rem; color: var(--on-surface-variant);">
+            <strong style="color: var(--on-surface); font-weight: 500;">Transparent Return &amp; Exchange Policy:</strong>
+            14-day hassle-free size exchange or refund across Sri Lanka. True-color daylight photography guaranteed; free courier pickup for sizing adjustments within Colombo &amp; Western Province.
+          </div>
+        </div>
+      </div>
+
+      <!-- Aggregate Fit Subscore & Cross-Review Customer Photos (Baymard #2 & #5) -->
+      <div class="reviews-fit-panel">
+        <div class="fit-meter-card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span class="label-voice" style="color: var(--tertiary);">Verified Aggregate Fit Subscore</span>
+            <span class="mono-voice" id="pdp-review-count" style="font-size: 0.82rem; color: var(--secondary);">128 Reviews</span>
+          </div>
+          <div style="font-family: var(--font-headline); font-size: 1.7rem; color: var(--on-surface);" id="pdp-fit-verdict">Fits True to Size</div>
+
+          <div>
+            <div class="fit-scale-bar">
+              <div class="fit-scale-marker" id="fit-scale-marker" style="left: 52%;"></div>
+            </div>
+            <div class="fit-scale-labels">
+              <span>Runs Small</span>
+              <span>True to Size</span>
+              <span>Runs Large</span>
+            </div>
+          </div>
+
+          <div class="fit-dist-row">
+            <span>Runs Small</span>
+            <div class="fit-dist-track"><div class="fit-dist-fill" id="fit-bar-small" style="width: 11%;"></div></div>
+            <span class="mono-voice" id="fit-pct-small">11%</span>
+          </div>
+          <div class="fit-dist-row">
+            <span>True to Size</span>
+            <div class="fit-dist-track"><div class="fit-dist-fill" id="fit-bar-true" style="width: 78%;"></div></div>
+            <span class="mono-voice" id="fit-pct-true">78%</span>
+          </div>
+          <div class="fit-dist-row">
+            <span>Runs Large</span>
+            <div class="fit-dist-track"><div class="fit-dist-fill" id="fit-bar-large" style="width: 11%;"></div></div>
+            <span class="mono-voice" id="fit-pct-large">11%</span>
+          </div>
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-md); flex-wrap: wrap; gap: var(--space-sm);">
+            <div>
+              <span class="label-voice" style="color: var(--tertiary);">Customer Fit Gallery</span>
+              <h4 style="font-family: var(--font-headline); font-size: 1.45rem; font-weight: 400; margin: var(--space-xs) 0 0;">Navigate Across Reviewer Photos</h4>
+            </div>
+            <button type="button" class="size-link-btn" onclick="openCrossReviewModal(0)">Open All Photos Overlay</button>
+          </div>
+          <div class="reviewer-photos-grid" id="reviewer-photos-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive 360° Runway Review & Virtual Try-On Mirror -->
+    <section class="section-block container reveal-section" id="virtual-mirror">
+      <div class="section-head">
+        <div class="kicker-voice">Create Your Own Style · Virtual Fashion Mirror</div>
+        <h2>360° Runway Review &amp; Virtual Try-On</h2>
+        <p>Rotate the 3D human model across every angle, customize silhouette fit, test Sri Lankan handloom patterns and colorways in real time, and inspect fabric weave density before ordering.</p>
+      </div>
+
+      <div class="mirror-workspace">
+        <!-- 3D Mirror Canvas -->
+        <div class="mirror-stage-card">
+          <div class="mirror-top-hud">
+            <span class="label-voice" style="color: var(--tertiary);">360° Interactive Mirror · Drag to Orbit</span>
+            <div class="stage-controls">
+              <button type="button" class="stage-chip active" onclick="setMirrorCamera(0, this)">Front</button>
+              <button type="button" class="stage-chip" onclick="setMirrorCamera(Math.PI * 0.25, this)">3/4 View</button>
+              <button type="button" class="stage-chip" onclick="setMirrorCamera(Math.PI * 0.5, this)">Side 90°</button>
+              <button type="button" class="stage-chip" onclick="setMirrorCamera(Math.PI, this)">Back View</button>
+              <button type="button" class="stage-chip" id="mirror-spin-btn" onclick="toggleMirrorAutoRotate(this)">Auto-360: Off</button>
+            </div>
+          </div>
+
+          <canvas id="mirror-three-canvas" aria-label="Interactive 360 degree 3D human virtual try-on mirror"></canvas>
+
+          <div class="mirror-bottom-hud">
+            <div>
+              <span class="label-voice">Active Styled Look</span>
+              <div id="mirror-active-summary" style="font-size: 0.9rem; color: var(--on-surface);">Obsidian Noir · Ceylon Handloom · Standard Fit</div>
+            </div>
+            <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary" onclick="saveCurrentLook()">Save Look</button>
+              <button type="button" class="btn btn-primary" onclick="addMirrorLookToCart()">Add Styled Look (Save 10%)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Mirror Customizer + Fabric Zoom-In Loupe -->
+        <div class="mirror-controls-panel">
+          <div class="mirror-control-group">
+            <span class="label-voice" style="color: var(--tertiary);">1. Complete the Look Layers (Outfitting)</span>
+            <div class="filter-row">
+              <button type="button" class="cat-btn active" id="layer-top-btn" onclick="toggleMirrorLayer('top', this)">Base Top / Dress: On</button>
+              <button type="button" class="cat-btn active" id="layer-bottom-btn" onclick="toggleMirrorLayer('bottom', this)">Tailored Bottom: On</button>
+              <button type="button" class="cat-btn active" id="layer-coat-btn" onclick="toggleMirrorLayer('coat', this)">Runway Outerwear: On</button>
+            </div>
+          </div>
+
+          <div class="mirror-control-group">
+            <span class="label-voice" style="color: var(--tertiary);">2. Body Fit &amp; Proportions Calibration</span>
+            <div class="filter-row">
+              <button type="button" class="cat-btn" onclick="setMirrorFit('petite', this)">Petite (158 cm)</button>
+              <button type="button" class="cat-btn active" onclick="setMirrorFit('standard', this)">Standard (173 cm)</button>
+              <button type="button" class="cat-btn" onclick="setMirrorFit('tall', this)">Tall / Relaxed (183 cm)</button>
+            </div>
+          </div>
+
+          <div class="mirror-control-group">
+            <span class="label-voice" style="color: var(--tertiary);">3. Live Colorway Switcher</span>
+            <div class="swatch-row" id="mirror-color-row"></div>
+          </div>
+
+          <div class="mirror-control-group">
+            <span class="label-voice" style="color: var(--tertiary);">4. Pattern &amp; Weave Architecture</span>
+            <div class="filter-row">
+              <button type="button" class="cat-btn active" onclick="setMirrorPattern('solid', this)">Solid Couture</button>
+              <button type="button" class="cat-btn" onclick="setMirrorPattern('handloom', this)">Handloom Stripe</button>
+              <button type="button" class="cat-btn" onclick="setMirrorPattern('pinstripe', this)">Atelier Pinstripe</button>
+              <button type="button" class="cat-btn" onclick="setMirrorPattern('check', this)">Minimal Grid</button>
+            </div>
+          </div>
+
+          <!-- Fabric Detail Zoom-In Inspector -->
+          <div class="mirror-control-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="label-voice" style="color: var(--tertiary);">5. Fabric Detail Zoom-In Inspector (4× Macro)</span>
+              <span class="mono-voice" id="loupe-gsm-badge" style="font-size: 0.76rem; color: var(--on-surface);">210 GSM</span>
+            </div>
+            <div class="loupe-inspector">
+              <canvas id="fabric-loupe-canvas" width="240" height="240" aria-label="4x magnified textile weave preview"></canvas>
+              <div class="loupe-specs">
+                <strong id="loupe-fabric-name" style="color: var(--on-surface); font-weight: 500;">Ceylon Handloom Cotton-Linen</strong>
+                <span id="loupe-fabric-desc">High-twist breathable warp engineered for tropical humidity with structured matte drape.</span>
+                <span class="mono-voice" id="loupe-care-note" style="font-size: 0.75rem; color: var(--tertiary);">Breathability: 94% · Cold gentle wash</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trending Fashion & Exclusive STYLE WEAR Collection -->
+    <section class="section-block container reveal-section" id="exclusive">
+      <div class="section-head">
+        <div class="kicker-voice">Trending &amp; Limited Release</div>
+        <h2>Exclusive STYLE WEAR Capsule</h2>
+        <p>Small-batch drops crafted in collaboration with Sri Lankan independent tailors and heritage weavers. Numbered editions focused on fabric longevity rather than fast-fashion volume.</p>
+      </div>
+
+      <div class="editorial-split-grid">
+        <article class="editorial-capsule-card">
+          <canvas class="capsule-canvas" id="capsule-canvas-1" width="480" height="300" aria-label="Colombo Architectural Trench Capsule"></canvas>
+          <span class="label-voice" style="color: var(--tertiary);">Trending · Edition of 40</span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.55rem; font-weight: 400; margin: 0;">The Monsoon Minimalist Edit</h3>
+          <p style="color: var(--on-surface-variant); margin: 0; font-size: 0.94rem;">Water-repellent organic cotton gabardine paired with breathable linen lining for sudden Colombo showers.</p>
+          <button type="button" class="btn btn-secondary" style="align-self: flex-start; margin-top: var(--space-xs);" onclick="inspectProductById('w-jacket-1')">Inspect Capsule Piece</button>
+        </article>
+
+        <article class="editorial-capsule-card">
+          <canvas class="capsule-canvas" id="capsule-canvas-2" width="480" height="300" aria-label="Kandy Heritage Handloom Menswear"></canvas>
+          <span class="label-voice" style="color: var(--tertiary);">Exclusive · Heritage Loom</span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.55rem; font-weight: 400; margin: 0;">Kandy Loom Heritage Tailoring</h3>
+          <p style="color: var(--on-surface-variant); margin: 0; font-size: 0.94rem;">Hand-dyed natural indigo and charcoal threads woven on traditional wooden looms by Central Province artisans.</p>
+          <button type="button" class="btn btn-secondary" style="align-self: flex-start; margin-top: var(--space-xs);" onclick="inspectProductById('m-shirt-1')">Inspect Capsule Piece</button>
+        </article>
+
+        <article class="editorial-capsule-card">
+          <canvas class="capsule-canvas" id="capsule-canvas-3" width="480" height="300" aria-label="Galle Coast Capsule Wardrobe"></canvas>
+          <span class="label-voice" style="color: var(--tertiary);">Trending · Complete Look</span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.55rem; font-weight: 400; margin: 0;">Galle Fort Resort Silhouettes</h3>
+          <p style="color: var(--on-surface-variant); margin: 0; font-size: 0.94rem;">Three-piece interchangeable travel separates designed to transition seamlessly from sunlit courtyards to evening galleries.</p>
+          <button type="button" class="btn btn-secondary" style="align-self: flex-start; margin-top: var(--space-xs);" onclick="inspectProductById('w-dress-1')">Inspect Capsule Piece</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- Brand Story: Sri Lankan Fashion Innovation & Small Business Empowerment -->
+    <section class="section-block container reveal-section" id="brand-story">
+      <div class="section-head">
+        <div class="kicker-voice">Brand Story &amp; Digital Transformation</div>
+        <h2>Empowering Small-Scale Sri Lankan Fashion</h2>
+        <p>Why STYLE WEAR built an independent, interactive transactional storefront rather than relying solely on social media feeds.</p>
+      </div>
+
+      <div class="story-metrics-grid">
+        <div class="story-figure">
+          <div class="label-voice">SL Fashion Market</div>
+          <div class="val">$456.4M</div>
+          <div class="cap">18.9% of total Sri Lankan e-commerce</div>
+        </div>
+        <div class="story-figure">
+          <div class="label-voice">Mobile Commerce</div>
+          <div class="val">78%</div>
+          <div class="cap">Orders placed via mobile devices</div>
+        </div>
+        <div class="story-figure">
+          <div class="label-voice">Transactional Lift</div>
+          <div class="val">85.3%</div>
+          <div class="cap">Visitor satisfaction vs. static sites</div>
+        </div>
+        <div class="story-figure">
+          <div class="label-voice">UX Gap Addressed</div>
+          <div class="val">90%</div>
+          <div class="cap">Apparel sites miss key UX standards</div>
+        </div>
+      </div>
+
+      <div class="story-narrative-cols">
+        <div class="story-prose">
+          <p>
+            Across Sri Lanka, independent fashion ateliers often begin on Instagram or Facebook—yet relying solely on social feeds leaves customers guessing about true fabric colors, real measurements, and return policies. Empirical research on small-enterprise websites shows 97.1% visitor dissatisfaction with passive brochure portals, whereas active transactional stores achieve 85.3% satisfaction.
+          </p>
+          <p>
+            STYLE WEAR bridges local craft and global UX standards. By pairing Sri Lankan mobile-first checkout (PayHere, FriMi, bank transfers, and Cash on Delivery) with Baymard-validated sizing clarity, unedited garment visuals, and interactive 3D outfitting, small-scale apparel makers can compete directly with established houses while drastically reducing costly product returns.
+          </p>
+        </div>
+
+        <div class="story-checklist">
+          <span class="label-voice" style="color: var(--tertiary);">Five UX Pillars Built Into Every Page</span>
+          <div class="story-check-item">
+            <i data-lucide="ruler" width="18" height="18" style="color: var(--tertiary); flex-shrink: 0;"></i>
+            <div>
+              <strong style="font-weight: 500;">Complete Sizing Clarity</strong> — Dual cm/inch charts, model dimensions, and garment-specific fit notes.
+            </div>
+          </div>
+          <div class="story-check-item">
+            <i data-lucide="images" width="18" height="18" style="color: var(--tertiary); flex-shrink: 0;"></i>
+            <div>
+              <strong style="font-weight: 500;">Cross-Review Photo Navigation</strong> — Browse all customer fit photos inside one continuous overlay.
+            </div>
+          </div>
+          <div class="story-check-item">
+            <i data-lucide="grid" width="18" height="18" style="color: var(--tertiary); flex-shrink: 0;"></i>
+            <div>
+              <strong style="font-weight: 500;">Exposed Size Buttons</strong> — Instant visibility into S, M, L, XL stock without hidden dropdowns.
+            </div>
+          </div>
+          <div class="story-check-item">
+            <i data-lucide="user-check" width="18" height="18" style="color: var(--tertiary); flex-shrink: 0;"></i>
+            <div>
+              <strong style="font-weight: 500;">Human Model Context &amp; Fit Subscore</strong> — True-to-size meter plus 3D runway drape inspection.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Us & Consultation Section -->
+    <section class="section-block container reveal-section" id="contact">
+      <div class="section-head">
+        <div class="kicker-voice">Private Concierge &amp; Colombo Studio</div>
+        <h2>Contact STYLE WEAR</h2>
+        <p>Questions on bespoke tailoring, size verification, or island-wide courier dispatch? Reach our Colombo styling desk directly.</p>
+      </div>
+
+      <div class="contact-grid">
+        <div style="border-top: var(--hairline); padding-top: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-md);">
+          <div>
+            <span class="label-voice">Atelier Address</span>
+            <p style="margin: var(--space-xs) 0 0; color: var(--on-surface);">42 Ward Place, Cinnamon Gardens, Colombo 07, Sri Lanka</p>
+          </div>
+          <div>
+            <span class="label-voice">Direct Styling Line &amp; WhatsApp</span>
+            <p class="mono-voice" style="margin: var(--space-xs) 0 0; color: var(--tertiary);">+94 11 273 3733 · +94 77 450 8210</p>
+          </div>
+          <div>
+            <span class="label-voice">Studio Hours</span>
+            <p style="margin: var(--space-xs) 0 0; color: var(--on-surface-variant);">Monday – Saturday, 09:30 – 19:30 IST (English, Sinhala &amp; Tamil Support)</p>
+          </div>
+          <div>
+            <span class="label-voice">Accepted Sri Lankan Payments</span>
+            <p style="margin: var(--space-xs) 0 0; color: var(--on-surface-variant);">PayHere · FriMi · mCash · Visa / Mastercard (LKR) · Cash on Delivery</p>
+          </div>
+        </div>
+
+        <form id="contact-form" onsubmit="submitContactForm(event)" style="border-top: var(--hairline); padding-top: var(--space-lg);">
+          <div class="form-field">
+            <label for="contact-name" class="label-voice">Your Name</label>
+            <input type="text" id="contact-name" class="atelier-input" required placeholder="e.g., Amaya Perera">
+          </div>
+          <div class="form-field">
+            <label for="contact-phone" class="label-voice">Phone or Email (+94)</label>
+            <input type="text" id="contact-phone" class="atelier-input" required placeholder="+94 77 ... or email@domain.lk">
+          </div>
+          <div class="form-field">
+            <label for="contact-topic" class="label-voice">Inquiry Type</label>
+            <select id="contact-topic" class="atelier-input" style="background: var(--background);">
+              <option value="Sizing & Fit Advice">Sizing &amp; Fit Advice</option>
+              <option value="Virtual Try-On Styling">Virtual Try-On Styling Request</option>
+              <option value="Island-Wide Order Dispatch">Island-Wide Order Dispatch</option>
+              <option value="Small Brand Artisan Collaboration">Small Brand Artisan Collaboration</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="contact-msg" class="label-voice">Message</label>
+            <textarea id="contact-msg" class="atelier-input" rows="2" required placeholder="Share garment name, preferred size, or delivery district..."></textarea>
+          </div>
+          <div style="display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+            <button type="submit" class="btn btn-primary">Send Concierge Request</button>
+            <span id="contact-form-status" style="font-size: 0.86rem; color: var(--positive);"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="brand-wordmark" style="font-size: 1.35rem;">STYLE WEAR</div>
+          <p style="max-width: 44ch; font-size: 0.86rem; color: var(--on-surface-variant); margin: var(--space-sm) 0 0;">
+            Futuristic digital fashion house empowering Sri Lankan independent apparel creators through immersive 3D experiences.
+          </p>
+        </div>
+        <div>
+          <span class="label-voice" style="display: block; margin-bottom: var(--space-xs);">Navigation</span>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-md);">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#showroom" class="nav-link">Shop</a>
+            <a href="#product-atelier" class="nav-link">Product Atelier</a>
+            <a href="#virtual-mirror" class="nav-link">Virtual Try-On</a>
+            <a href="#brand-story" class="nav-link">Brand Story</a>
+          </div>
+        </div>
+      </div>
+      <div class="sources-note">
+        <strong>Research &amp; Market Grounding:</strong> Apparel UX architecture informed by Baymard Institute Apparel &amp; Accessories Usability Research (1,765 hours tested; 5 Core Apparel UX Best Practices); Sri Lankan consumer return-prevention &amp; trust findings from Bandara &amp; Geethanjali (2025), <em>MENTOR: The Journal of Business Studies</em>, Eastern University Sri Lanka; small-enterprise website satisfaction modeling from Hallal, <em>Australian Journal of Business and Management Research</em>; Sri Lankan e-commerce &amp; payment infrastructure context from International Trade Administration (2024) &amp; Augmatic Labs; and virtual outfitting patterns from Stylitics.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shopping Bag & Local Checkout Drawer -->
+  <div class="drawer-backdrop" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
+    <div class="drawer-panel">
+      <div class="modal-head">
+        <h3 id="cart-drawer-title" style="font-family: var(--font-headline); font-size: 1.65rem; font-weight: 400; margin: 0;">Your Style Bag</h3>
+        <button type="button" class="btn btn-ghost" style="min-height: 36px; padding: 0.3rem 0.7rem;" onclick="closeCartDrawer()">Close</button>
+      </div>
+      <div id="cart-items-list" style="display: flex; flex-direction: column; gap: var(--space-md); flex: 1;"></div>
+      <div style="border-top: var(--hairline); padding-top: var(--space-md); display: flex; flex-direction: column; gap: var(--space-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span class="label-voice">Subtotal</span>
+          <span class="mono-voice" id="cart-subtotal-val" style="font-size: 1.25rem; color: var(--tertiary);">LKR 0</span>
+        </div>
+        <div class="form-field" style="margin-bottom: var(--space-xs);">
+          <label for="checkout-payment-method" class="label-voice">Sri Lankan Payment Method</label>
+          <select id="checkout-payment-method" class="atelier-input" style="background: var(--surface-container-low); padding-inline: var(--space-sm);">
+            <option value="PayHere (Visa / Mastercard LKR)">PayHere (Visa / Mastercard LKR · 0% Stamp Duty)</option>
+            <option value="FriMi Mobile Wallet">FriMi Mobile Wallet</option>
+            <option value="Cash on Delivery (Island-wide)">Cash on Delivery (Colombo &amp; Island-wide)</option>
+            <option value="Bank Transfer">Direct Commercial Bank Transfer</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="checkout-submit-btn" onclick="completeDemoOrder()">Confirm Express Order</button>
+        <div id="checkout-feedback" style="font-size: 0.84rem; color: var(--positive);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Account & Saved Fit Profile Drawer -->
+  <div class="drawer-backdrop" id="profile-drawer" role="dialog" aria-modal="true" aria-labelledby="profile-drawer-title">
+    <div class="drawer-panel">
+      <div class="modal-head">
+        <h3 id="profile-drawer-title" style="font-family: var(--font-headline); font-size: 1.65rem; font-weight: 400; margin: 0;">Account &amp; Fit Profile</h3>
+        <button type="button" class="btn btn-ghost" style="min-height: 36px; padding: 0.3rem 0.7rem;" onclick="closeProfileDrawer()">Close</button>
+      </div>
+      <div>
+        <span class="label-voice" style="color: var(--tertiary);">Member Identity</span>
+        <p style="margin: var(--space-xs) 0 0; color: var(--on-surface);">STYLE WEAR Digital Wardrobe · Colombo Studio</p>
+      </div>
+      <div class="form-field">
+        <label for="profile-size-pref" class="label-voice">Preferred Garment Size</label>
+        <select id="profile-size-pref" class="atelier-input" style="background: var(--surface-container-low); padding-inline: var(--space-sm);" onchange="saveProfilePrefs()">
+          <option value="S">S (UK 8 / US 4)</option>
+          <option value="M" selected>M (UK 10-12 / US 6-8)</option>
+          <option value="L">L (UK 14 / US 10)</option>
+          <option value="XL">XL (UK 16 / US 12)</option>
+        </select>
+      </div>
+      <div>
+        <span class="label-voice" style="display: block; margin-bottom: var(--space-sm); color: var(--tertiary);">Saved Virtual Mirror Looks</span>
+        <div id="saved-looks-list" style="display: flex; flex-direction: column; gap: var(--space-sm);"></div>
+      </div>
+      <div style="margin-top: auto; border-top: var(--hairline-soft); padding-top: var(--space-md);">
+        <button type="button" class="btn btn-ghost" style="width: 100%;" onclick="resetSessionState(this)">Reset Saved Session Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Size Guide Modal (Baymard #1: 10 Sizing Best Practices) -->
+  <div class="overlay-backdrop" id="size-guide-modal" role="dialog" aria-modal="true" aria-labelledby="size-guide-title">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <span class="label-voice" style="color: var(--tertiary);">Baymard Verified Sizing Standard</span>
+          <h3 id="size-guide-title" style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 400; margin: var(--space-xs) 0 0;">STYLE WEAR Garment Size Guide</h3>
+        </div>
+        <button type="button" class="btn btn-ghost" onclick="closeSizeGuideModal()">Close</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+        <div class="filter-row">
+          <button type="button" class="cat-btn active" id="unit-cm-btn" onclick="setSizeUnit('cm')">Centimeters (cm)</button>
+          <button type="button" class="cat-btn" id="unit-in-btn" onclick="setSizeUnit('in')">Inches (in)</button>
+        </div>
+        <span class="label-voice">Includes US / UK / EU Conversions</span>
+      </div>
+
+      <table class="couture-table">
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>UK / SL</th>
+            <th>US</th>
+            <th>EU</th>
+            <th>Chest (<span class="unit-label">cm</span>)</th>
+            <th>Waist (<span class="unit-label">cm</span>)</th>
+            <th>Hip (<span class="unit-label">cm</span>)</th>
+          </tr>
+        </thead>
+        <tbody id="size-guide-tbody"></tbody>
+      </table>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md); padding-top: var(--space-md); border-top: var(--hairline-soft);">
+        <div>
+          <span class="label-voice" style="color: var(--tertiary);">How to Measure</span>
+          <p style="font-size: 0.86rem; color: var(--on-surface-variant); margin: var(--space-xs) 0 0;">Keep the tape horizontal at the fullest chest, natural narrowest waist, and widest hip with relaxed posture.</p>
+        </div>
+        <div>
+          <span class="label-voice" style="color: var(--tertiary);">Human Model Reference</span>
+          <p style="font-size: 0.86rem; color: var(--on-surface-variant); margin: var(--space-xs) 0 0;">Featured female model is 173 cm (5'8"), Bust 88 cm, Waist 68 cm, wearing Size M. Male model is 182 cm (6'0"), wearing Size L.</p>
+        </div>
+        <div>
+          <span class="label-voice" style="color: var(--tertiary);">Fit Specialist Help</span>
+          <p style="font-size: 0.86rem; color: var(--on-surface-variant); margin: var(--space-xs) 0 0;">Need exact garment-flat measurements? Call +94 11 273 3733 for instant tailoring guidance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cross-Review Customer Photo Carousel Modal (Baymard #2) -->
+  <div class="overlay-backdrop" id="cross-review-modal" role="dialog" aria-modal="true" aria-labelledby="cross-review-title">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <span class="label-voice" style="color: var(--tertiary);">Cross-Review Photo Navigator</span>
+          <h3 id="cross-review-title" style="font-family: var(--font-headline); font-size: 1.65rem; font-weight: 400; margin: var(--space-xs) 0 0;">Verified Customer Fit Photos</h3>
+        </div>
+        <button type="button" class="btn btn-ghost" onclick="closeCrossReviewModal()">Close</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-xl); align-items: center;">
+        <div style="position: relative; background: var(--surface-container-low); border: var(--hairline-soft); aspect-ratio: 3 / 4;">
+          <canvas id="modal-review-canvas" width="420" height="560" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <div class="mono-voice" id="modal-review-counter" style="color: var(--tertiary); font-size: 0.84rem;">Photo 1 of 4</div>
+          <h4 id="modal-review-author" style="font-family: var(--font-headline); font-size: 1.55rem; font-weight: 400; margin: 0;">Nethmi S. · Colombo 03</h4>
+          <p id="modal-review-meta" class="label-voice" style="margin: 0;">Purchased Size M · Height 168 cm · Fit: True to Size</p>
+          <p id="modal-review-quote" style="color: var(--on-surface-variant); margin: 0;">“The unedited daylight color matches the site exactly. Breathable enough for afternoon errands in Colombo and drapes cleanly.”</p>
+          <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-sm);">
+            <button type="button" class="btn btn-secondary" onclick="stepCrossReview(-1)">Previous Review</button>
+            <button type="button" class="btn btn-primary" onclick="stepCrossReview(1)">Next Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-banner" id="toast-banner" role="status" aria-live="polite">
+    <i data-lucide="check" width="16" height="16" style="color: var(--tertiary);"></i>
+    <span id="toast-text">Updated</span>
+  </div>
+
+  <api-shim></api-shim>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
